@@ -1,0 +1,11 @@
+{
+  "question": "Quel est ton langage de programmation prefere ?",
+  "options": [
+    {"label": "Java", "votes": 15},
+    {"label": "PHP", "votes": 12},
+    {"label": "Python", "votes": 20},
+    {"label": "JavaScript", "votes": 18},
+    {"label": "C++", "votes": 7}
+  ],
+  "total": 72
+}
