@@ -3,11 +3,9 @@ import java.io.IOException;
 
 public class SondageAPI {
 
-    // les options du sondage et leurs votes
     static String[] langages = {"Java", "PHP", "Python", "JavaScript", "C++"};
     static int[] votes = {15, 12, 20, 18, 7};
 
-    // calcule le total des votes
     public static int getTotalVotes() {
         int total = 0;
         for (int v : votes) {
@@ -16,7 +14,6 @@ public class SondageAPI {
         return total;
     }
 
-    // genere le contenu JSON
     public static String genererResultatsJson() {
         String json = "{\n";
         json += "  \"question\": \"Quel est ton langage de programmation prefere ?\",\n";
