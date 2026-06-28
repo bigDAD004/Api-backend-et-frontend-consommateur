@@ -1,50 +1,62 @@
-<?php
-
-$cheminJson = __DIR__ . '/resultats.json';
-
-if (!file_exists($cheminJson)) {
-    die("Erreur : le fichier resultats.json est introuvable. "
-        . "Avez-vous lance SondageAPI cote backend ?");
-}
-
-$contenu = file_get_contents($cheminJson);
-$resultats = json_decode($contenu, true);
-
-if ($resultats === null) {
-    die("Erreur : le fichier resultats.json n'a pas pu etre decode (JSON invalide).");
-}
-
-$totalVotes = array_sum($resultats);
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Resultats du sondage</title>
+    <title>Résultats du Sondage</title>
 </head>
 <body>
-    <h1>Resultats du sondage : Quel langage preferez-vous ?</h1>
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>Option</th>
-            <th>Votes</th>
-            <th>Pourcentage</th>
-        </tr>
-        <?php foreach ($resultats as $option => $votes): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($option); ?></td>
-                <td><?php echo (int) $votes; ?></td>
-                <td>
-                    <?php
-                    $pourcentage = $totalVotes > 0
-                        ? round(($votes / $totalVotes) * 100, 1)
-                        : 0;
-                    echo $pourcentage . " %";
-                    ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-    <p>Total des votes : <?php echo $totalVotes; ?></p>
+
+    <h1>Résultats du sondage : Quel langage préférez-vous ?</h1>
+
+    <?php
+    $fichier = 'resultats.json';
+
+    if (file_exists($fichier)) {
+        $contenuJson = file_get_contents($fichier);
+        $donneesBrutes = json_decode($contenuJson, true);
+
+        if (!empty($donneesBrutes)) {
+            $resultats = [];
+            $totalVotes = 0;
+
+            // On filtre pour ne garder que les valeurs numériques (les votes)
+            foreach ($donneesBrutes as $cle => $valeur) {
+                if (is_numeric($valeur)) {
+                    $resultats[$cle] = (int)$valeur;
+                    $totalVotes += (int)$valeur;
+                }
+            }
+
+            if (!empty($resultats)) {
+                echo "<table border='1'>";
+                echo "<tr>
+                        <th>Option</th>
+                        <th>Votes</th>
+                        <th>Pourcentage</th>
+                      </tr>";
+
+                foreach ($resultats as $option => $votes) {
+                    $pourcentage = $totalVotes > 0 ? round(($votes / $totalVotes) * 100, 1) : 0;
+                    
+                    echo "<tr>";
+                    echo "<td>" . htmlspecialchars($option) . "</td>";
+                    echo "<td>" . $votes . "</td>";
+                    echo "<td>" . $pourcentage . " %</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+                
+                echo "<p>Total des votes : " . $totalVotes . "</p>";
+            } else {
+                echo "<p>Aucune donnée de vote numérique trouvée.</p>";
+            }
+        } else {
+            echo "<p>Le fichier JSON est vide.</p>";
+        }
+    } else {
+        echo "<p>Le fichier resultats.json est introuvable.</p>";
+    }
+    ?>
+
 </body>
 </html>
