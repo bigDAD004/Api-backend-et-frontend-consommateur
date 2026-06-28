@@ -1,0 +1,4 @@
+*.class
+resultats.json
+.idea/
+target/
